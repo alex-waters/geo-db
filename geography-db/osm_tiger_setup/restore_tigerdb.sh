@@ -1,0 +1,1 @@
+psql -h address-finding.cycxgzzqnbk6.us-east-1.rds.amazonaws.com -U postgres -d tiger-import -W -f tiger_import_bkp.sql

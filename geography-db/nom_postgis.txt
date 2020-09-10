@@ -1,0 +1,18 @@
+osm2pgsql -S import-full.style -lsc -O gazetteer --hstore --multi-geometry --number-processes 4 -C 10000 -P 5432 -U postgres -W -H address-finding.cyc.us-east-1.rds.amazonaws.com -d nominatim north-america-latest.osm.pbf
+addressdb
+'''postgresql://postgres:addressdb@address-finding.cyc.us-east-1.rds.amazonaws.com:5432/nominatim'''
+
+-- Backup of Docker Nominatim db --
+pg_dump -h address-finding.cyc.us-east-1.rds.amazonaws.com -U postgres -d nominatim --schema-only -W -f nom_bkp.sql
+psql -h address-finding.cyc.us-east-1.rds.amazonaws.com -U postgres -d mapping -W -f tiger_import_bkp.sql
+
+
+Tiger data source is from OSM not US Gov:
+https://nominatim.org/data/
+
+wget https://nominatim.org/data/tiger2019-nominatim-preprocessed.tar.gz
+tar xf tiger2019-nominatim-preprocessed.tar.gz
+
+
+
+

@@ -1,0 +1,25 @@
+docker run -t -v /home/ec2-user/nntm_data:/data nominatim  sh /app/init.sh /data/minnesota-latest.osm.pbf postgresdata 4
+
+docker run --restart=always -p 6432:5432 -p 7070:8080 -d --name nominatim -v /home/ec2-user/nntm_data/postgresdata:/var/lib/postgresql/11/main nominatim bash /app/start.sh
+
+If Tiger data is outside of container, mount the directory to :/data/tiger
+This follows the paths specified in defaults.php
+
+Building the Tiger data into the db requires running the PHP app.
+Copy the defaults.php into setup.php so that constants are defined within the script.
+Change the first CMAKE path to /app/src
+Change the CMAKE install path to ./build
+Add a database user to the DSN constant and set that user to be password auth in pg_hba.conf file.
+
+Make nominatim.so accessible to database user. Use chown or chmod on the file
+
+Importing Tiger to postgis needs :
+sudo -u postgres ./src/build/utils/setup.php --import-tiger-data
+This requires peer authentication for the postgres db user.
+
+Run
+docker exec -it nominatim sudo -u postgres ./src/build/utils/setup.php --create-functions --enable-diff-updates --create-partition-functions
+
+
+TROUBLESHOOTING:
+Think - file permissions, accessibility of mounted volumes, postgres auth type, what user is running the command
